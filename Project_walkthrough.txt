@@ -1,0 +1,986 @@
+Day 1
+1. first we run this in terminal "npm create vite@latest" to create our project
+
+2. Install dependencies npm install react-router-dom axios react-toastify
+
+3. Install tailwind npm install tailwindcss @tailwindcss/vite (Follow the steps on tailwind website.)
+
+4. Clear the index.html, App.jsx, App.css, index.css
+
+5. For using tailwind we import it to your working css file and use the utilities in class property.
+
+6. Assets folder has asssets.js in this we have imported all the images and exported them in the assets object,
+whenever we want a image we will import this assets object then we can acces these images.
+
+7. We need react router dom to support multiple pages in our project.
+
+8. Routing 
+    import BrowserRouter form react-router-dom and replace strictmode tag with BrowserRouter tag to enable routing.
+
+    Created pages in pages folder ex- About.jsx , import these page's function into App.jsx to render them using <Route>.
+
+    To create Routes import Routes, Route from react-router-dom and write routes inside <Routes> tag with <Route /> tag.
+
+    Add path to those routes and page's tags in element attribute.
+
+9. Navbar
+    Create Navbar.jsx component in conponents folder
+
+    Create logo using img tag.
+
+    Create a ul for adding home , all doctors , about , contact links in Navbar
+
+    Now not using li tags directly but wraping each of them in NavLink tag and also import it from react-router-dom.
+    (Apply some talwind css)
+     
+    An Navlink has class='active' if the link is clicked if not clicked class does not have active. 
+
+    set the horizontal line to hidden.
+
+    If the class is active then display block using tailwind directive @apply to class .active
+
+
+Day 2
+1. Headers(component)
+    1. Create Headers.jsx in components.
+
+    2. divide this into two divs(left side adn right side). 
+
+    3. On left side create all the text and add the image using img tag, create an anchor tag to use as a button for booking appointment.
+
+    4. On the right add image from the asssets.Apply tailwind to whatever you have created.
+
+2. Speciality Menu (component)
+    Here we display all the specialities of the doctors.
+
+    First create two text i.e one using h1 tag and other using p tag.
+
+    Create a div to display speciality, import specialityData from assets and use map function(params-item, index) to create Link (use Link from react-router-dom)
+
+    By importing we have all data about specialtiy , first create img tag and a p tag.
+
+    In img tag give src using item as items.image, in p tag write in curly braces items.speciality 
+
+    In the Link tag create a onClick function and write scrollTo(0,0) so when we navigate to that page we are on top.
+
+    In the Link tag , write path{/doctors/{speciality}} in "to" attribute to navigate to the page .
+
+    Write {index} in key attribute, it helps identify items in the list (if it changes).
+
+3. Top Doctors (component)
+    Here we will display top 10 doctors in a card format.
+
+    First create an h1 tag and a p tag for the text.
+
+    Create a div which will display cards, import doctors from assets.
+
+    Slice the doctors to get 10 doctors , use map function to map them data into cards.
+
+    The card has image , is doctor available, name, speciality.
+
+    Take img by  item.image, name by item.name, speciality by item.speciality , apply tailwind to each.
+
+    In the div create onClick function to navigate to /appointment/${item._id} page and key= {index}
+
+    To enable navigate create navigate variable using useNavigate hook.
+
+    Also create button to navigate to /doctors.
+
+Day 3
+
+Context file
+    Suppose we have data such as doctors from the assets and we want to use it in a component we simply import it form assets
+    but if the data is altered the page wont rerender to update changes made in data or if user updates something.
+
+    If we want to use live state of data and rerender automatically when we data is changed we can use Context API.
+
+    For this first create context folder and create AppContext.jsx, import createContext form react and importing what we want to pass(data/variable).
+
+    Create a variable AppContext using createContext, this will be used to pass the data/variable.
+
+    Create AppContextProvider function with props param, this will be used to wrap around our App in main.jsx.
+
+    props is properties of this function, it is a object which will carry data.
+
+    Create object called value inside function and provide data in this.
+
+    In return statement write AppContext.Provider tag and give your value object in value attribute, inside this write props.children
+
+    Export both AppContext and AppContextProvider, in main.jsx import AppContextProvider and wrap your App with AppContextProvider tag.
+
+    Use this in Top doctors, import useContext from react , import AppContext, create variable as {doctors} using useContext.
+
+    Now you can use doctors in Top doctors.
+
+Day 4
+
+Doctors page
+    First create p tag to add text , on left side we have speciality and on right we have doctors cards.
+
+    Fetch speciality from url using useParam() hook first import it.
+
+    Create state varibles filterDoc this will save the specialist doctor info (if no specialist then all doctors.)
+
+    Create applyfilter function , update setFiletDoc , use filter function to select doctors using condition-filter doctor whose speciality === speciality(url) 
+
+    else setFilterDoc(doctors) all doctors.
+
+    create useEffect function(import from react) , give it the applyfilter(), and dependencies [doctors, speciality] i.e when these are updated applyfilter is called.
+
+    Now for doctor cards ,use map function on filterDoc copy from all doctors
+     
+    Create onClick function on this div to navigate to /appointment/{item._id} and key={index}
+
+    Now for speciality list , create onClick function if speciality === specific speciality navigate to /doctors else navigate to /doctors/sepcific speciality(Use your brain this logic is not simple.) 
+
+
+Day 5 
+
+Appointment page
+    Use useParams to first get docId from url, get doctors, currencySymbol using useContext([null])
+
+    Create state variable docInfo, create function fetchDocInfo as async.
+
+    In this function create variable docInfo(this is not the state variabel created above) using find function on doctors data finding doctor with same id as parameter in the url.
+
+    Now setDocInfo to docInfo, create useEffect to call fetchDocInfo dependencies[doctors, docId].
+
+    Left side is img right side is information of doctor, here use docInfo for image and doctor's info
+
+    Right side contains name, degree , speciality, experience, about and fees.
+
+    Booking Slots(Logic)
+    
+    There are three things , the days , time slots per day, book appointment button.
+
+    First create 3 state variables docSlots([null]), slotIndex(0), slotTime('')
+
+    create a function getAvailableSlots() as async, and initialize setDocSlots [].
+
+    create today(current date) variable as date object, now  we create a for loop for making slots of seven days from today.
+
+    create currentDate datetime object set its date to + i, now create endTime datetime object and set its date to today + i i.e todays schedule will end tommorow and set hours to 21.
+
+    we will set hours & minutes on currentDate to initialize where to start from.
+
+    Check if date of currentDate is today if yes , then in setHours in currentDate hours is greater than 10 then +1 hour else setHoures to 10, if minutes is greater than 30 then set 30 else 0.
+   
+    But if currentDate is not today then setHours to 10 and miniutes to 0.
+
+    Now we create timeslots for this create empty array timeSlots, and create while loop where currentDate < endTime.
+
+    First we need formatted time for this use toLocaleString on currentDate to customize hours to 2-digits and minutes to 2-digits and store in formatted time.
+
+    Push into timeSlots array,  datetime as new Date(currentDate) and time as formatted time.
+
+    Now we increment time in currentDate by 30 minutes so all time slots have 30 minutes interval.
+
+    Now outside while loop in set setDocSlots to prev=>(...prev, timeSlots) and time slots for this date will get created.
+
+    Now in useEffects when docInfo changes getAvailableSlots will get called.
+
+    Booking Slots (UI)
+
+    Firstly create p tag for text Booking slots, create a div and in curly braces we will use map function to map docSlots to ui.
+
+    In the map function create another div and two p tags for displaying day and date , create daysOfWeek array variable before return.
+
+    Initialize this array with day names and use this in the map function first p tag.
+
+    In the second p tag use item[0].datetime.getDate() , in the present div set onClick function in this setSlotIndex(index) we'll use this in the div below.
+
+    Secondly create another div for displaying timeslots , use map function to map docSlots[slotIndex] to timeslots (ui).
+
+    create a p tag in the map function , in this write item.time.Lowercase and in the className add regular tailwind and when item.time === slotTime change bg-color of timeslot.
+
+    But we'll have to set slot time for using it so create onClick function in p tag, where setSlotTime(item.time).
+    
+    Lastly create button Book Appointment.
+    
+    And add tailwind to these divs and p tags.
+
+    Related Doctors (component)
+
+    Here we will display doctors related to the doctor whose  appointment we are booking.
+
+    First we will need parameters in this function speciality and docId.
+
+    Create state varaible relDoc and create navigate variable using useNavigate().
+    
+    Create a useEffect where we will set relDoc when doctors, speciality, docId. In this use filter method on doctors to find doctors who has same speciality as the appointment doctor.
+
+    Now copy top doctors component's div and paste in this component and where we map docotor replace doctors with reDoc.
+
+    import this component in the Appointment page and provide speciality and docId in RelatedDoctors tag.
+
+About Page 
+
+    This page need no logic it is just text and css.
+
+
+Day 6
+
+Contact Page
+    It is also just text and css.
+
+    We first created a p tag to display Contact Us in a div,in another div created a image sourced from assets.
+
+    Create another div inside this to display the office , address, contact, email, etc and apply css to this. 
+
+
+My Profile Page
+    Here we will display user's information.
+
+    Create a state variable userData to maintain current user data, initialize with name, image, email, phone, address(object with line1 and line2),gender, dob.
+
+    Create a isEdit state variable so when we want to edit info all text becomes input spaces, we will not edit email beacause it will be reigistered during login or Sign up.
+
+    Add image using image from userData, in curly braces use ternary operator for if statement.
+
+    If isEdit true create input field access userData.name using value attribute, create onChange function provide e(event) param and setUserData in callback prev(param) use spread operator as (...prev, name:e.target.value) else p tag userData.name.
+
+    In above onChange function we set userData , add name from our input field using event to the key name which we accessed in value attribute
+
+    Now create another div(This div is for contact info-email, phone, address),  here give p tag , create another div to display contact info in this display email using userData.email(not going to edit).
+
+    Create a p tag for phone number, below in curly braces same as above, if isEdit create input field value userData.phone, onChange with e(event) param in this function setUserData with prev(param) use spread operator as {...prev, phone:e.target.value} else p tag userData.phone.
+
+    Create a p tag for address, below in curly braces if isEdit for this we will create two input field for two lines of address line1 and line2(according to our userData address object).
+
+    If isEdit true then in first input value = userData.address.line1, onChange function provide e(event)param in this setUserData provide prev param use spread operator as {...prev, address:{...prev, line1:e.target.value}} same for second input field for line2.
+
+    Create another div for Basic information-gender and birthday, in this create p tag basic info.
+
+    In this create another div , create a p tag gender, below write in curly braces if isEdidt true create select tag between these tags add two option tags with value male and female else p tag userData.gender.
+
+    Then in the select tag set value attribute userData.gender, set attribute onChange ,in this onChange create function with e(event)param , in this setUserData with prev(param) use spread operator as {...prev, gender: e.target.value}
+
+    Another p tag for birthday , below in curly braces, if isEdit true create input field set type attribute to 'date' set value uesrData.dob, set onChange function with e (event)param in this function setUserData with prev(param) use spread operator as {...prev, dob: e.target.value} else p tag userData.dob.
+
+    Create seperate div outside these info divs for buttons to set value of isEdit.
+
+    In curly braces if isEdit true create button Save info , in this button create onClick function where setIsEdit false. 
+    
+    Else create button Edit , in this button create onClick function where setIsEdit true. 
+
+My appointments Page
+
+    We have not yet connected our database so we will just display three random doctors.
+
+    First create p tag My Appointments, create a div in this write in curly braces slice doctors array to get 3 doctors use map function m in this create div , in this create another div, in this add image using item.image here item is the param of map function.
+
+    Below this create another div , add six p tag, in each add, item.name, item.speciality, Address:, item.address.line1, item.address.line2, and some date text respectively.
+
+    Below this create another div and add two buttons Pay Online and Cancel appointment. 
+    
+
+Day 7
+
+Making UI resposive
+
+    Menu button
+
+    When we see the mobile view we cannot see the Navlinks they disappear at that size so we have to add one menu button/link to show it.
+
+    Create a state variable showMenu initialize false, add image of menu button in the prfile div.
+
+    Apply onClick to the img tag to setShowMenu true. Create a div for menu keep it hidden for medium screen to larger.
+
+    Create another div for logo and cancel button. add img of both , and add onClick to cancel button to setShowMenu false.
+
+    Now create a ul, inside create four navlinks Home, All doctors, About , Contact. Set to attribute for each and give path to respective page and whenever we click this link setShowMenu to false. 
+
+    Filter button
+
+    In the doctors page we will add a filter button to show show speciality menu only when clicked in the mobile view.
+
+    Create a showFilter state variable and initialize to false. Add a filters button above specialities, add onClick function and setFilter to !prev i.e opposite of existing value.
+
+    Also add dynamic class to this button when showFilter true bg-primary text-white
+
+
+Day 8
+
+Backend Setup 
+    
+    Create a backend folder in the project and create a server.js file in it.
+
+    Open it in integrated terminal, write command npm init dont enter any text just keep clicking enter.
+
+    Installing dependancies npm install express, mongoose, multer,  bcrypt, cloudinary, cors, dotenv, jsonwebtoken, nodemon, validator.
+
+    import express in server.js after that go to package.json and update type to module and save the changes.
+
+Express App Setup 
+
+    import express, cors, 'dotenv/config'.
+    
+    Create app variable to use the express, create port where server can render use 'or' operator incase if dodtenv file doesnt have port.
+
+    Create middleware(this is the piece of code that runs before any execution) using app.use(express.json()) so when any request(client data) comes it is parsed here and converted to json.
+
+    Create another middleware inside write cors() .Cors is Cross origin resource share it enables resource sharing between another origin for ex. if frontend on localhost:3000 tries to call backend API running on localhost:4000.
+
+    Create a route using app.get() , here you provide it route(url path) and callback function with param req and res in this write res.send("API working").
+
+    In above statement req is request coming from client from the browser(which contains data from client), res is the response we send from the server.
+
+    Write app.listen() this defines from which port we will get the client requests from and provide port.
+
+Database Setup(Mongodb)
+
+    Create a folder structure for the backend ,create config, controllers, middlewares, models, routes and a .env file.
+
+    Go to Mongodb Atlas(it is to store and manage our data on cloud) create an account , select the free version, create cluster, create database user, set username and password , select connection method drivers copy the connection string till net.
+
+    Create a environment variable in .env file named MONGODB_URI and paste it there.On the atlas website in network security add IP Address 0.0.0.0/0
+
+    Create mongodb.js file in config folder, in this file import mongoose(mongoose works as a translator between server and database).
+
+    Create a connectDB function async in this write mongoose.connection.on("connected", ()=> console.log("db connected")) this tells us whether db is connected or not.
+
+    Then use mongoose.connect() to connect db provide URI/RadAssist, and then export this function. 
+    
+    Lastly in the server.js import connectDB and call it after the app.
+
+    Go to cloudinary website Sign up , go to API key and generate new API key, now copy cloud name, api key, secret key and make env variables in .env file and paste there.
+
+    Create cloudinary.js in config folder import cloudinary and create a async function  write cloudinary.config() , inside this provide cloud name, api key, and secret key and export and then call connectcloudinary after connectDB in server.js.
+    
+DB models
+
+    Now we will create db models/Schema , first doctorModel create a doctorModel.js file in models ,import mongoose, create a variable doctorSchema initialize instance with new keyword and mongoose.Schema()
+
+    Inside Schema create a object write field names with type and default values after this object in curly braces write minimize:false this enables the use of default.
+
+    Create doctorModel variable provide our schema and export. 
+
+    Do the same for userModel.In user model for image go to website image to base64 put img from assets copy and paste in the field as default.
+
+
+Day 9
+
+Setting API for adding doctor
+
+    Create a controller function , controller function is used to improve the code readability and not doing everything in server.js. It mostly contains backend logic .
+
+    Create addDoctor async function with req res param and in try catch block extract data from the req.body and export.
+
+    Now in the middlewares folder create multer.js , middleware is like a middle man which is used to parse the req that comes from client.
+    
+    In this case we want user to upload a file and we will parse the file using multer to define destination and filename 
+
+    Import multer create a variable storage use multer.diskStrorage() this defines how to store the incoming file on disk, write filename: function.., this filename key takes a function with req, file(uploaded by user), callback(after your work call this callback function).
+
+    Now call the callback and provide error(if any) else null and filename you can also write logic for unique filename before calling this function.
+
+    Create upload variable use multer({storage}) and export.
+
+    Now create adminRoute.js for this API in a seperate route folder (this is to maintain readability and write dry code)  
+
+    Import express, import addDoctor from controllers and import upload from middlewares, create variable adminRouter use express.Router() this creates a mini express app which does not need tons of config and just used for making routes in seperate files other than server.js
+
+    Do a post request adminRouter.post('/add-doctor', upload.single('image'), addDoctor) and export.
+
+    In server.js create a middleware using .use('/api/admin', adminRouter) this route is conventional, this will fire the adminRouter which makes a post request to path "/add-doc" so we go to path /api/admin/add-doctor, use upload(which we defined in middlewares/multer.js) to parse the req/image from client , and add the req.body data to variables according to addDoctor function.
+
+Adding doctor
+
+    Above we did the setup for adding doctor , now we will actually add the doctor.
+
+    In the try block after creating and initializing variable with req.body, create variable imageFile for storing image using req.file, check if any field is empty if empty give a response, check if email is valid using validator, check if password length is greater than 8.
+
+    Create salt for the password and hash the password using bcrypt(provide both password and salt)
+
+    Create a variable for uploading image file on cloudinary, for this use cloudinary.uploader.upload() here provide imageFile.path and resourcetype.
+
+    Generate image url using imageUpload.secure_url and store in imageUrl.
+
+    Create a doctorData object and initialize with data from the user, for image give imageUrl, for password give hashed password , for address parse the address given by client, for date give Data.now().
+
+    Create a newDoctor variable and create a instance of doctorModel and provide doctorData and use .save() method and give response that doctor is added and if error give the error message using catch block.
+
+    Now use postman to test the api, make a post request , add all the necessary fields .If success you will see data on your atlas.
+
+Day 10  
+
+    Now we need to authenticate the admin , admin will have to provide a token to add the doctor , the token will be given to admin when he logs in.
+
+    So we have to create two functions first is admin login in adminController and we also create route for this login and pass this function, where he provides the email and password , to get token from server as a response.
+
+    Second is authAdmin function and we also add this function in the the add-doctor route , where this token is verified.
+
+    Firstly create loginAdmin async function in adminController.js which takes res, req param.In this create a try catch block, in catch block console.log the error and send response.
+
+    In the try block store email and password using req.body(email & pass sent from client), check if they match admin email and pass from env variable , if yes then create token using jwt.sign here provide email+pass and secret key and give the token in res, then export this function.
+
+    Secondly create file authAdmin.js , in this create authAdmin async function with res, req, next param in middlewares folder, here next functoin is a part of middleware pattern, when this function is called that means everything checks and passes the control to the next middleware and route handler.
+
+    In this function get the token into a variable from the req.headers, check if the token is empty return response "Not authorized", if non-empty decode the token using jwt.verify here provide token and jwt secret, check if the decoded token is not equal to admin email + admin password then return response "Not authorized" then at last call next function. write this all in the try block.
+
+    In the catch block console.log error and give response error message.And then export authAdmin.
+
+Day 11 
+    admin create vite , frontend viteconfig , admin viteconfig, login , browserrouter , context, login, token using context,
+    Admin setup
+    Create a folder admin in the project , open its terminal and create a vite application, install npm packages and also axios, react-router-dom and react-toastify.
+
+    In the viteconfig of frontend add server and mention its port(5173) , same for admin viteconfig port(5174).
+
+    Now enable the tailwindcss, for this open tailwindcss npm website, follow the steps to enable tailwind.
+
+    Copy assets content from assets admin and paste to admin folder assets.Delete content from app.jsx, app.css, index.css.Import browserRouter from react-router-dom and Wrap <App /> with BrowserRouter.
+
+    Login Page
+
+    We are going to create login page for admin and doctor, create login.jsx file, mount it in App.jsx.
+
+    Create state variables state and setState ,set initial value to 'Admin'.To change form details according to who wants to login, create email and password state variables.
+    
+    Create form tag in this create div, in this first create p tag and write {state} in curly braces and Login.The state will either indicate Admin or Doctor.
+
+    Create another div , write email in p tag, create input field type=email required , create another div with p tag password and input field type=password.
+
+    Add onChange function to email input field where setEmail(e.target.value) do the same for password input field.
+
+    Create a button Login, now in curly braces if state === 'Admin' create p tag 'Doctor Login? Click here' and if Doctor then create p tag 'Admin Login? Click here' so the user can switch between admin login and doctor login.
+
+    Write the 'Click here' in span inside th p tag we created above, add onClick attribute to span and setState("Doctor") and setState("Admin") for second p tag.
+
+    Context
+
+    Create context folder in src folder , in this create AdminContext.jsx, DoctorContext.jsx, AppContext.jsx.
+
+    Create AdminContext using createContext() and export it
+
+    Create AdminContextProvider function with param (props), in this create a object value, in the return statement use AdminContext.Provider tags with value={value} (the value inside this is the object we created earlier).
+
+    Inside these tags write {props.children}, Now copy this whole code and paste to DoctorContext.jsx and AdminContext.jsx and change names according to the file.
+
+    Now in main.jsx wrap <App /> with AdminContextProvider, DoctorContextProvider, AppContextProvider.  
+
+    Now in AdminContextProvider create state variable aToken and setAToken and initiise it to "", and add these to the value object.Create .env file and store backend url (http:/localhost:4000) and name it VITE_BACKEND_URL this is how env variables are stored in a vite application with this naming convention.
+
+    In the AdminContextProvider under aToken state variable create backendUrl variable and fetch the env variable here by import.meta.env.VITE_BACKEND_URL
+
+    Logic for Login page
+
+    In the Login function in Login.jsx get the setAToken setter functoin and backendUrl using useContext, Create a onSubmitHandler async function with event param, write event.preventDefault() so when form submits it does not reload the page.
+
+    Create try catch block , console the error in catch block, in try block if state==='Admin' create post request using axios with await keyword, give the url by concatenating backendUrl and 'api/admin/login' and pass email and password we got using the form and store this response in data variable.
+
+    This post request will work because we made its api in the backend folder.
+
+    Now if data.success is true then first store data.token using localStorage.setItem and also setAToken(data.token) , else toast.error(data.message).
+
+    For using this tost method , first go to toastify website copy its import statement, paste in the App.jsx, add its component <ToastContainer /> in the App.jsx, import toast from react-toastify in Login.jsx, and you can now use the toast method.
+
+    Create Navbar.jsx file in components
+
+    App.jsx modify
+
+    We will modify this to display login page when there is no token and display Navbar when there is token.
+
+    First get the aToken using useContext, in the return statement if aToken then create div and add component <Navabar /> and <ToastContainer /> else in the div <Login /> and <ToastContainer />.
+
+    A slight problem came when we reloaded the page the token is set to ''.So modify the state variable in AdminContext.jsx.
+
+    Instead of initializing to '' create a ternary operator, here if localStorage.getItem('aToken') then localStorage.getItem("aToken") else '' this means if localStorage is non empty then initialize it to that or "".
+
+    Navbar
+
+    Get the aToken, setAToken using useContext hook and create navigate variable using useNavigate hook.
+
+    Now create logout function, here navigate to '/' so when this function is activated it will navigate to / , use and operator if aToken then setAToken("") and again using & operator delete token from localStorage by localStorage.removeItem('aToken').
+
+    In the return statement create div , inside create another div , in this create img give src assets.admin_logo then in p tag specify admin or doctor this tells us who is using to dashboard.
+
+    Create Logout button annd to this add onClick attribute and in this give logout.
+
+    Now we will create the admin dashbaord.Navbar is common for every page but Sidebar is for admin dashboard.
+
+    Sidebar 
+
+    We want to create a sidebar in the admin dashboard, so create Sidebar.jsx mount it onto the App.jsx file.
+
+    In the pages folder create admin folder and doctor folder , in the admin folder create AddDoctor.jsx, AllAppointments.jsx, Dashboard.jsx, DoctorsList.jsx
+
+    Now we create the routes for these admin pages, so first import Routes, Route from react-router-dom, under Sidebar component in App.jsx create Routes tag.
+
+    In this Routes tag , create multiple Route tag first for path '/' element <></>, then for path '/admin-dashbaord' element <Dashboard />, then for path '/all-appointments' element <AllAppointments/>, then for path '/add-doctor' element <AddDoctor/>, then for path '/doctor-list' element <DoctorsList/>.
+
+    In Sidebar.jsx import NavLink, get the aToken using useContext.
+
+    In the return statement create a div , in this write in curly braces for using js , we will check if there is token then create a list using ul tag and create four NavLink.
+
+    In the first NavLink create image and give src home_icon, create to attribute and give path '/admin-dashboard' then p tag Dashboard, do the same for Appointment, Add Doctor and Doctors List for their respective image and path.
+
+    Now give tailwindcss, but we will use dynamic class, in this create a function with param isActive which tells if a link is active or not, in the function use template literals `` add your normal css then in &{} if isActive true then change bg and border style and copy this in every NavLink.
+
+    AddDoctor page
+
+    Now we will create AddDoctor function , in this we will create a form to get doctor information, first create form tag in this create p tag for title which is Add Dcotor.
+
+    Now create a div , in this create another div for uploading file , create label tag htmlFor="add-doctor", in this create image give src upload area then close label, create input field with id="add-doctor" hidden , then p tag Upload doctor picture.
+
+    Create another div for all the text inputs , create another div for left section and another for right section.
+
+    For left section, create div for Doctor name which contains p tag and input tag, aonther div for Doctor Email with p tag and input tag, another div for password with p tag and input tag, another div for experience with p tag and select tag and give options, another div for fees with p tag and input tag.
+
+    For the right section, create another div for speciality with p tag and select tag(option tags), another div for Education with p tag and input tag, another div for Address with p tag and two input tags.
+
+    Then a div for About Doctor field , give p tag and textarea tag with row={5}.
+
+    Create a button Add Doctor. 
+
+Day 12
+
+    AddDoctor Logic 
+
+    Now we will add logic to fetch the form data and save in our database.
+
+    Create state variables for all the input fields , initialise the docImg state variable to false , initialise speciality variable to General Physician, initialise experience variable to 1Year and initialise other with "".
+
+    Get the backekndUrl and aToken using useContext, now if the user inputs file which contains doctor image then we will preview it.
+
+    In the image source use ternary operator if docImg then URL.createObjectURL(docImg) else assets.upload_area, for input field of file create onChange attribute create arrow function give param e and setDocImg(e.target.files[0]),for the other input fields create onChange attribute with arrow function with param e , use setter function to set respective state variables to e.target.value
+
+    Now create onSubmitHandler function which will gather the form data and save in daatabase.
+
+    Create onSubmitHandler async function with param event, write event.preventDefault() so the application doesnt reload when we submit.
+
+    Create try catch block , in the try block if there is no docImg then return toast.error(".."), create formData instance using new keyword and FormData().
+
+    Now simply append the state variables to formData, for fees write Number(fees) to convert string to number, for address use JSON.stringify an give proper key value pair for address.
+
+    Now make a post request using axios, create destructure data variable, use await , make request, in this concat backendUrl and "/api/admin/add-doctor", give formData, give {headers:{aToken}}.
+
+    After the request if  data.success true then toast.succes("..") and set all setter function to "", if false then toast.error("..").
+
+    In the catch block toast.error(".."), Lastly add onSubmit attribute to form tag and call onSubmitHandler. 
+
+    Now just add data of 15 doctors to the database using the application(refer assets file for doctor data).
+
+    Doctors List 
+
+    This displays all doctors with checkboxes which indicates whether a doctor is available or not , admin can modify who shall be avaialable.
+
+    First we will create an api to get all doctors from database in adminController.js file(in backend folder).
+
+    Create all doctors async function with req, res param, create try catch block.
+
+    In try block create doctors variable where we wil fetch the doctors info, use await, use doctorModel.find({}) to fetch all doctors, use .select() to exclude because we dont want that and also not good for security purpose and in the catch block res.json() and export this function.
+
+    Create route for '/all-doctors' in adminRoute using post request and also give authAdmin and allDoctor.
+
+    Create getAllDoctors async function in AdminContext.jsx, in this create try catch block, in the try block create destructure data variable, use await, make post request with path as backendUrl + "/api/admin/add-doctors", give{} because there is no data, give headers:{aToken}.
+
+    If data.success setDoctors setter function to data.doctors else toast.error and in the catch block toast.error(..) and add doctors and getAllDoctors to value object.
+    
+    Now in the DoctorsList.jsx, get doctors, aToken, getAllDoctors using useContext, create useEffect, give arrow function if aToken then call getAllDoctors() and dependency [aToken].
+
+    In the return statement create div, in this create h1 tag, create another div, in curly braces use map function on doctors with item, index param.
+
+    In this map function create another div, in this create img tag src={item.image}, create another div, create two p tags for name and speciality, create another div input tag type=checkbox , create checked attribute in this give item.available
+    
+
+Day 13
+    Change availability function
+
+    Above we made the frontend now we add logic for this, in the doctorController.js create changeAvailability async function with req, res param, get the docId from req.body.
+
+    Now use findByIdAndUpdate method to update available field in database, give docId and object where we will specify updated value for available field.
+
+    Create try catch block , in the try block we will fetch docData using doctorModel(we defined this is models) fetch using docId, give response success and message availability changed, in the catch block console error and taost error and lastly export changeAvailability function.
+
+    Create route for using this function certain request is made using this route.
+
+    In adminRoute.js create a post request with path '/changeAvailability' give authAdmin which verifies token, and give changeAvailability function.
+
+    Now we will use this api in admin folder in AdminContext.js, create changeAvailability async function give param docId, create try catch block, in the try block create destructure data variable in this make a get request, give path backendUrl concat "api/admin/change-availability", give docId, give token in the headers.
+
+    If data.success toast success, call getAllDoctors so the updated value in database also gets updated in out state variables using getAllDoctors function and in the catch block give toast error and add this function to value object.
+
+    Now destructure this function in DoctorsList.jsx using useContext, in the checkbox input create onChange property , in this using arrow function call changeAvailability(item._id).
+
+    Integrating api in forntend project
+
+    Create .env file in fontend , write VITE_BACKEND_URL and give backeknd url, create variable in AppContext and store this using import.meta.env.VITE_BACKEND_URL
+
+    Create getDoctorData async function , create try catch block, in th try block create destructure data variable here make a get request using axios and provide path backekndUrl concat /api/doctor/list.
+
+    Create doctors, setDoctors state variable.
+    
+    if data.success then set setDoctors to data.doctors else give error using toast, in the catch block console error and also toast error, create useEffect and call this function , in the dependency give empty list so this is called when page reloads.
+
+    Now we will create function for getAllDoctors, in doctorController.js create DoctorsList async function with req, res param, create try catch block, in the try block use doctorModel.find to get all doctors and exclude password , give response success and in this reponse give doctors fetched, in the catch block give response error and export.
+
+    import express and create a mini express app using Router() function to variable doctorRouter, create a get request to path '/list', give doctorsList function we made export doctorRouter, now in the server.js create a middleware with path '/api/doctor' give doctorRouter .
+
+    User Authentication
+
+    In backend in controller create userController.js, create a registerUser async function with req, res param.
+
+    Create try catch block, in try block destructure name, email, password from req.body, create if any field empty return response 'Missing Details', import validator to validate email, create if email is not valid return response "enter a valid email", create if password length < 8 return response "enter strong password".
+
+    Import bcrypt , create salt using genSalt 10 rounds, create hashedPassword variable in this use hash function and give password and salt to generate hash password.
+
+    Create userData object , in this give name, email, password(hashedPassword), create a newUser instance userModel give useData, then save the newUser in database using save().
+
+    Import jwt from jsonwebtoken ,create token using jwt.sign give user._id and jwt secret from env file to create token, give response success and token, in the catch block console error and give toast error ,lastly export this function. 
+
+    Using this function we will create a route , create userRoute.js in route folder, import express create mini app using Router() in userRouter variable, create a post request to path '/register' and give registerUser function and export userRouter.
+
+    In server create middleware using use() give path "/api/user" and give userRouter.
+
+    Now we will  create login function for user, create loginUser async functoin with req, res param in userController.js, create try catch block , in try block destructure email and password using req.body.
+
+    Create user variable in which use userModel to find(using findOne({email})) the user who wants to login, if no user found return response success false and messaage 'User does not exist'.
+
+    Create isMatch variable in which use bcrypt to compare password(user typed) and user.password(database), if isMatch true create token using jwt.sign() give user._id and jwt secret to create token and give response success and token else give response success false and message "Invalid credentials".
+
+    In the catch block console error and response success false and messaage error and export loginUser.
+
+    Create route for this function in userRoute, make a post request give path "/login" and give loginUser function.
+
+    Integrate these API in frontend
+
+    Now come to frontend , in AppContext create state variable token setToken add it to value object and also add backekndUrl.
+
+    In the Login page get backekndUrl, token, setToken using useContext, create navigate variable using useNavigate, in the onSubmitHandler function create try catch block, create if state === 'Sign up' destructure data variable in this make a post request to path backekndUrl concat "/api/user/register" and give name , email, password.
+
+    If data.success true then in localStorage setItem "token" to data.token, set setToken to data.token else toast error, if state not Sign up then it means it is for login then destructure data variable in this make a post request to path backendUrl concat '/api/user/login' and give email and password , if data.success true then in localStorage setItem 'token' to data.token else toast error.
+
+    In the catch block toast error  and in form tag create onSubmit attribute in this call onSubmitHandler and give button type 'submit'.
+
+    Now go to Navbar component , delete token state variable used for temporary use , get token and setToken using useContext.
+    
+    Create logout async function in this Navbar , in this setToken to false and in localStorage removeItem 'token' and in the logout p tag call logout in onClick attribute.
+
+    Create a useEffect and if token is present the navigate to '/' , give dependency token.
+
+    In the AppContext while initialising token state variable, give ternary operator , in this if localStorage getItem is true then localStorage getItem(this will be initialized) else "".
+
+    API to get user info from db for user profile
+
+    In the userController.js create a getpProfile async function, in this we need userId which we will extract from user token and add it to the request.userId, for this create authUser.js in middleware.
+
+    In authUser create authUser async function with req, res, next param, in this create try catch block, in the try block destructure token from req.headers, if no token then return response success false and message "Not authorized".
+
+    After the if statement we will decode token using jwt.verify(), here give token and jwt secret, then store token.id to req.userId and call next(), in the catch block console error and response success false, message error and export authUser.
+
+    Now in the getProfile function in userController get userId using req.userId, create userData variable and get user associated with this id using findById and exclude password, give response success true and userData and export getProfile.
+
+    In the userRoute create route for this , make a get request to path '/get-profile' and give authUser and getProfile function
+
+    API TO UPDATE USER Profile
+
+    In the userController.js create updateProfile async function with req, res param, in this destructure name, phone, address, dob, gender from req.body, get the userId using req.userId, get imageFile from req.file.
+
+    if name or phone or gender or dob or address is empty return response success false, message data missing, now we will update the user info in db.
+
+    Use userModel.findByIdAndUpdate() give userId, {name, phone, address:JSON.parse(address, dob, gender)}.
+
+    For uploading image we will first upload image to cloudinary and generate imageurl and then upload the image url to the db , for this first import {v2 as cloudinary} from 'cloudinary'.
+
+    Now if imageFile present create variable imageUpload in this using cloudinary.uploader.upload() give imageFile.path and resource type image, create imageURL variable get url by imageUpload.secure_url, using userModel.findByIdAndUpdate() upload image url for this give userId and imageURL
+
+    Give response success true and message profile updated and export this updateProfile function, in the userRouter.js create path for this , make a post request to path '/update-profile', give upload.single("image"), authUser and updateProfile function.
+
+    INTEGRATING GETPROFILE AND UPDATEPROFILE API WITH frontend
+
+    In the frontend open AppContext , here create state variable userData and setUserData and initialize false.
+
+    In AppContext.jsx create loadProfileData async function, in this create try catch block, in try block destructure data , here make a get request to path backend concat '/api/user/get-profile' and give headers:{token}.
+
+    If data.success set setUserData to data.userData else give toast error, in the catch block console error and toast error, create useEffect in this if token present then call loadProfileData else set setUserData false and give dependency token so when token changes this useEffect is activated.
+
+    Add userData and setUserData and loadProfileData to value object
+
+    Delete the temporary userData created in MyProfile, and get userData and setUserData using useContext, in the return statement of this MyProfile page write as as such return userData && (..) so there is no reload problem. 
+
+Day 14 
+
+    Affecting DB WHEN USER DATA EDITTED IN MY Profile
+
+    In my profile page, create state variable image and setImage, in the return statement , in curly braces write ternary operator, if isEdit true then create a label tag give for='image', in this create div, in this create two iamge tags, write src for first image, in this give ternary operator if image then URL.createObjectURL(image) else userData.image.
+
+    Now in the second iamage, in the src write ternary operator if image then "" else assets.upload_icon, now outside div create input type=file , give it id same as label's for attribute, create onChange attribute , in this create function with e param and setImage to e.target.files[0], if isEdit is false give img tag and src userData.img
+
+    Now in the Save info button we setIsEdit false instead give updateUserProfile function which we will create next.
+
+    Create updateUserProfile async function, create try catch block , in try block create formData instance using FormData(), use in this formData append name using userData.name , do the same for phone, address, gender, and dob , note that for address give JSON.stringify(userData.address).
+
+    If image true then append image to formData, destructure variable data, in this make a post request to path backeknd concat '/api/use/update-profile', if data.success then give toast.success , call loadProfileData to get this updated profile data of user, setIsEdit to false and setImage to false else toast.error and in the catch block toast.error
+
+    Now to also update the profile image in navbar simultaneously, go to Navabar.jsx get userData from useContext, now in the image tag where we provide the userImage update src to userData.image.
+
+    Logic for Appointment Booking
+
+    First create appointmentModel.js in models folder, import mongoose, create appointmentSchema variable , in this create instance of mongoose.schema({..}), in this Schema function specify fields with their respective type, required, default.
+
+    create userId, docId, slotTime, userData, docData, amount, date, cancelled, payment, isCompleted fields, then create appointmentModel using this appointmentSchema and export appointmentModel.
+
+    Now we will create api function for booking appointment, in userController.js create bookAppointment async function with req, res param.
+
+    Get docId, slotDate, slotTime from req.body. Get userId from req.userId. fetch docData for this create docData variable in this use findById on doctorModel give docId and exclude password, if docData.available is false then return res.json success:false and message Doctor not available.
+
+    Create slots_booked variable , store docData.slots_booked in it. If slots_booked has slotDate then check if slots_booked[slotDate] has slotTime in it if yes that means that time slot is not availabe and return response success false and message slot not available, if slotTime is not present then push the slotTime we got from user to slots_booked[slotDate].
+
+    If there is not even slotDate then create empty array of slotDate and push user's slotTime in it .
+
+    Get userData from userModel.findById give userId and exclude password. Now delete docData.slots_booked cause it will be historical data because we are just going to update the slots.
+
+    Create appointmentData object , in this give userId, docId, userData, docData, amount:docData.fees, slotTime, slotDate, date:date.now().
+
+    Create newAppointment instance of appointmentModel give the appointmentData object and save into db using save(), now we need to update slots_bookedin doctorModel then give response succes true and message appointment booked and export this bookAppointment function.
+
+    Now we will create api endpoint or route, in userRoute make a post request to path '/book-appointment', give authUser(for userId) and bookAppointment function.
+
+    Now we will implement this in appointment.jsx, first in AppContext in the value object add getDoctorData, now in the appointment.jsx get backendUrl, token , and getDoctorData using useContext.
+
+    Now create bookAppointment async function, in this if token is not present then give toast.warn and navigate to login page.Now create try catch block, in the try block get the date from docSlots[slotIndex][0].datetime (the slotIndex will the index of slot which user has clicked), create day variable in this get day by getDate(), for month use getMonth()+1, for year use getFullYear function
+
+    Create slotDate variable in this concat day month and year with "_" between.
+
+    Now destructure variable data, in this make a get request to path backekndUrl concat '/api/user/bookAppointment', give {docId, slotDate, slotTime} and headers:{token}.
+
+    if data.success then toast.success, call getDoctorData() so we get the updated data with updated slots, navigate to '/my-appointments' else console.error give toast.error, in the catch block console error and toast.error.
+    
+    But we can still see the booked slot in appointment page, we will create logic so that when appointment is booked for a slot, then it will not show in the frontend .
+
+    Come to getAvailableSlots function in this after formattedTime create day,month and year using getDate(), getMonth()+1, getFullYear(), and concat these with "_" between in slotDate variable, create slotTime in this store formattedTime, create isSlotAvailable variable in this create ternary operator if slot is available , for this first check if docInfo has slotDate use && operator and check if docInfo.slots_booked[slotDate] has slotTime , if this true then false else true.
+
+    create if statement in this if isSlotAvailable true only then push datetime and time to timeSlots.
+
+    Display Appointments from DB in My appointment page
+
+    For this go to userController.js , in this create listAppointment async function with req, res param, in this create try catch block , in the try block get the userId from req.useId, create appointments variable in this find appointments of certain userId from appointmentModel, give response success true and appointments and export llistAppointment function.
+
+    Now we will create a route for this api, come to userRoute.js in this make a get request to path '/appointments', give authUser(for userId) and listAppointment function.
+
+    To implement this come to My Appointment page, get backendUrl and token from useContext and create state variable appointments and setAppointments initialize [], Now create getUserAppointments async function, in this create try catch block.
+
+    In the try block destructure variable data, in this make a get request to path backekndUrl concat '/api/user/appointments', and give headers:{token}.
+
+    If data.success true then setAppointments to data.appointments.reverse() and in the catch block console error and toast.error, create useEffect , in this if token present then call getUserAppointments() give dependancy [token].
+
+    Lastly in return statement instead of doctors.slice() write appointments state variable, just a little problem the doctor image , doctor name, doctor address is not stored directly in appointments it is stored in docData object in appointments so fix that and instead of displaying static date and time display slotDate and slotTime from item.
+
+Day 15
+
+    According to figma design the date dispalyed in the appointments list is different so we will fix this.
+
+    Come to my appointments page here, create month variable in this create list of Months keep the first one empty because inde starts from 0 it will be useful when we use this list.
+
+    Create slotDateFormat function with slotDate param, create dateArray variable in this split the slotDate by _ so we have day, month and yeat seperatly, in the return statement concat day, month and year using dateArray by dateArray[0] + " " + month[Number(dateArray[1])] + " " + dateArray[2]
+
+    And in the date paragraph call slotDateFormat(item.slotDate).
+
+    CANCEL Appointment FUNCIONALITY
+
+    In the userController.js create cancelAppointment async function with req, res param, destructure appointmentId from req.body and get userIf from req.userId, create appointmentData variable in this get the appointment using findById on appointmentModel by giving appointmentId.
+
+    If appointmentData.userId !== userId then return response success false and message "Unauthorized action", outside this if statement update the cancel attribute by using findByIdAndUpdate on appointmentModel give appointmentId and {cancelled:true}
+
+    Now we have to also update the slots in docData, for this first destructure docId, slotDate, slotTime from appointmentData, now get the doctorData using findById on doctorModel give docId, store the slot_booked from docData to a variable, update the slots_booked by using filter method on it , in this filter (e => e !== slotTime) this will filter the slotTime and store every slot except slotTime(which we took from appointmentData) cancelled by user. 
+
+    Use findByIdAndUpdate on doctorModel to give the updated slots_booked, for that give both docId and slots_booked, in response give success true and message "Appointment cancelled", now create route for this go to userRoute.js create a post request to path "/cancel-appointment", give authUser, cancelAppointment function.
+
+    To implement this in frontend go to MyAppointments page create cancelAppointment async function with appointmentId param , in this create try catch block , in the try block destructure date variable in this make a post request to path backendUrl concat "/api/user/cancel-appointment", give appointmentId and headers:{token}.
+
+    if data.success true then toast.success, call getUserAppointements() and getDoctorsData() so we get the updated values else give toast.error, in the catch block console error and toast.error.
+
+    Create onClick property in the cancel appointment button , in this create a arrow function in which call cancelAppointment(item._id).
+
+    When we cancel appointment it is still showing us pay online and cancel button we have to show button when cancelled field false.
+
+    In curly braces when item.cancelled is false show button for this use && operator same for Pay Online button, when item.cancelled is true show a Appointment Cancelled button.
+
+    When we cancel appointment the slot is free and should be visible in the appointment page where we book the appointment, for this get getDoctorData from useContext , call this in the cancelAppointment function so updated data is reflected in appointments page.
+
+    To apply the pay online function we needed to use razorpay but coudnt register on razporpay website so we will just create a function which changes the payment field to true when clicked pay online.
+
+    For this create payment async function with req, res param in userController.js in this get userId from req.userId and appointmentId from req.body, create appointment variable in this use findById on appointmentModel to get the appointment.
+
+    If appointment.userId === userId then use findByIdAndUpdate on appointmentModel give appointmentId and {payment:true} give response success true and message Payment Successful else response success false and message Payment Failed, in the catch block console error and response success false and message error.message and export this payment function.
+
+    Create route for this, go to userRoute create a post request to path "/payment" give authUser and payment function.
+
+    To implement this in MyAppointments page create makePayment async function with appointmentId param, in this create try catch block, in the try block destructure data in this make a post request to path backekndUrl concat '/api/user/payment' and give appointmentId and headers:{token}, if data.success call getUserAppointements() to display the updated data and navigate to /my-appointments page, in the catch block console error and toast error.
+
+    Now create onClick attribute in the Pay Online button in this give create arrow function in this call makePayment(item._id).
+
+    Display Paid button , for this when item.cancelled is false and item.payment is true create a button Paid.
+
+
+Day 16
+    All appointments page (admin)
+
+    Now we wil create a list of appointements for the admin panel.
+
+    For this come to adminController.js in this create appointmentAdmin async function with req, res param, create try catch block , in the try block create appointments variable in this use find method to fetch appointment from appointmentModel and response success true and appointments, in the catch block console error and response success false message error.message
+
+    Create a route in adminRoute.js , in this create a get route to path '/appointments', give authAdmin and appointmentsAdmin function.
+
+    To implement this API go to AdminContext, in this first create state variable appointments and setAppointments initialize to [],create a variable backendUrl in this import VITE_BACKEND_URL from .env file, create getAllAppointments async function, create try catch block , in the try block destructure data variable , in this make a get request give backendUrl concat "/api/admin/appointments" and in the header:{aToken}.
+
+    If data success then set setAppointments to data.appointments ,else console error and toast.error, in the catch block toast.error , now add getAllAppointments, appointments and setAppointments to value object.
+
+    Now get and  destructure aToken, appointments and getAllAppointments using useContext from AdminContext, create useEffect in the arrow function if aToken present then call getAllAppointments and give dependancy aToken.
+    
+    In the return statement create div, in this create p tag All Appointments, create another div , another div, in this create 7 p tag for serial no, patient, age, date, doctor, fees action, we will create a table with these columns.
+    
+    Now create another div , in the curly braces use map function on appointments state variable give item , index param, in this create another div with key attribute={index}, in this show p tag index+1, create another div and display image src={item.userData.iamge} and p tag item.userData.name.
+
+    Now after image we have to display age for this we will first calulate age , for this in the AppContext create currency variable and store "$"(will be needed later) and create calulateAge function with dob param, create today var using Date(), birthday using Date(dob), let age give the difference and return age
+
+    In the AllAppointments get and destructure calculateAge and currency from AppContext using useContext, now in the return statement after image create p tag {calculateAge(item.userData.dob)}.
+
+    Now we have to display date and time for this again come to AppContext create Month variable in this give jan to dec with first element " " create slotDateFormat function give slotDate param, in this split('_') slotDate and store in  dateArray , then return dateArray[0] + " " +  month[Number(dateArray[1])] + " " + dateArray[2] and add slotDateFormat to value object.
+
+    Now after age create p tag slotDateFormat(item.slotDate), item.slotTime, now create div in this create img tag src=item.docData.image
+
+    Another p tag {currency}, {item.amount}, in curly braces create ternary operator if item.cancelled true then p tag Cancelled else img tag src={assets.cancel_icon}.
+
+    Now we have to create api for adding the cancel function so go to userController copy cancelAppointment function and paste to adminController.js, change the name to appointmentCancel and delete the if statement where we verify the userId and also delete userId var and export cancelAppointments, now we will create route for this.
+
+    Go to adminRoute.js create a post route to path "/cancel-appointment" and give authAdmin and appointmentCancel.
+
+    To implement this api go to adminContext create cancelAppointment async function with appointmentId, create try catch block , in try block destructure data variable in this make the post request to path backendUrl concat "/api/admin/cancel-appointment", give appointmentId and header:{aToken}.
+
+    If data.success then toast.success and call getAppointments so we get the updated appointments and in the catch block toast.error and export cancelAppointment.
+
+    In the AllAppointments page get and destructure cancelAppointment from AdminContext using useContext, in the cancel img tag create onClick attribute in this create arrow function call cancelAppointment(item._id).
+
+    Dashboard (Admin)
+
+    Go to adminController function and create adminDashboard async function with req, res param, in this create try catch block, in try block create appointments, doctors, patients variable and fetch respective data from db.
+
+    Create object dashData , in this create keys appointements, doctors, patients , latestAppointments and give appointements.length, doctors.length, user.length and appointments.reverse().slice(0,6) respectively and give response success true and dashData, in the catch block console error and response success false and message:error.message and export adminDashboard.
+
+    Now create route for this adminDashboard, go to adminRoute.js, create a get request to path "/dashbaord" give authAdmin, adminDashboard function.
+
+    To implement this go to adminContext create dashData and setDashData and initialize to false, create getDashData async function, in this create try catch block , in try block destructure data variabel in this make a get request to backendUrl concat "/api/admin/dashbaord" give headers:{aToken}, if data.success then setDashData(data.dashData) else toast.error, in the catch block toast.error and add this getDashData and dashData to value object.
+
+    Now go to Dashboard page get and destructure dashData, aToken, cancelAppointment, getDashData from AdminContext using useContext, create useEffect in the arrow function if aToken then call getDashData and depencdency aToken.
+
+    In the return statement use && operator to check if there is dashData then render html snippet we will write now.
+
+    Create a div(whole), another div(will contain the number of appointements, doctors and users), another div(to display no of doctors), in this create img tag src={assets.doctor_icon}, create another div, in this create p tag {dashData.doctors} and another p tag Doctors do the same for appointments and patients(users) by copying the div for displaying no of doctors.
+
+    Now we will create the latest appointements part , for this create another div , another div create img tag src={assets.list_icon} and p tag latest booking.
+
+    Now outside this create another div, in curly braces use map function on dashData.latestAppointments give item, index param, ini this create a div, in this create a img tag src={item.docData.name}, another div tag , in this 2 p tags , item.docData.name and item.slotDate respectively.
+
+    Now create another curly braces inside first div create ternary operator , if item.cancelled then p tag Cancelled else img tag src={assets.cancel_icon}, now create a onClick attribute in this img tag and in arrow function call cancelAppointment(item._id) .
+
+    Doctors Login
+
+    Now we will enable the doctor to login to the application.
+
+    For this come to doctorController.js and create loginDoctor async function with req, res param, in this create try catch block , in try block destructure email and password from req.body, create doctor variable here find the doctor using findOne({email}) on doctorModel, now if there is no doctor return response success false and message "Invalid Credentials".
+
+    Create a isMatch variable use bcrypt to compare password(from user) and doctor.password(from db), if isMatch true then create token variable in this use jwt.sign() give id:doctor._id and jwt secret from .env file and give response success true and token or else response success false and message "Invalid Credentials" and in the catch block console error response success false and message:error.message and lastly export loginDoctor function.
+
+    Create route by creating post request in the doctorRoute.js, to path "/login" and give loginDoctor.
+
+    Now in the doctorContext create backekndUrl variable give value form .env file and create dToken and setDToken state variable and initialize "" and add these to the value object.
+
+    Now come to login page , in this in the else block which resides within try block destructure data variable , in this make a post request to path backekndUrl concat "/api/doctor/login" and give {email, password}.
+
+    If data.success then localStorage.setItem('dToken', data.token), setDToken(data.token) else toast.error and in the catch block console error, now in the App.jsx first destructure dToken form doctorContext in return statement instead of aTokne write aToken || dToken.
+
+    Now in pages folder in the doctors folder create  DoctorAppointment.jsx, DoctorDashboard.jsx and DoctorProfile.jsx. And in the App.jsx create new routes using <Route> give path respectively.
+
+    Come to sidebar.jsx here destructure dToken from DoctorContext, now copy the ternary operator and copy it below, delete one Navlink and change the names according to the files in doctor folder and also update the paths.
+
+    Create authDoctor.js in the middlewares folder , copy code from authUser and paste it to the authDoctor.js and change to variabel and funcion names accordingly.
+
+    Go to doctorController create appointmentsDoctor async function with req, res param(this is for getting appointments for doctor panel), in this create try catch block , in try block get the docId from req.docId, create appointments variable in this fetch using find({docId}), give response success true and appointments, and in catch block console error and response success false and message:error.message and export appointementsDoctor, now in the doctorRouter.js create a route , in this create a get request to path "/appointements" and give authDoctor and appointmentsDoctor function.
+
+    In the DoctorContext.jsx create state variable appointments and setAppointments initialize to [], create getAppointments async function, in this create try catch block , in try block destructure data variable , in this make a get request to path backekndUrl concat "/api/doctor/appointments", give headers:{dToken}.
+
+    If data.success setAppointments to data.appointements.reverse() else console error and toast.error, in the catch block console error  and toast.error and add to value object.
+
+    Now go to DoctorAppointments.jsx page , here destructure dToken, appointments, and getAppointments from DoctorContext, create useEffect in the arrow function if dToken true then call getAppointments() and give dependency dToken and export DoctorAppointments
+
+
+Day 17
+
+    Now we will create the ui for doctor appointments page, go to doctor appointments page , create the colums to display serial number, patient, payment, age, date, fees , action.
+
+    Below this in curly braces use map function on appointements state variable give, item and index param, in this create div, in this create p tag in curly braces index, create div in this img tag src item.userData, create another div , in this curly braces item.payment ? "Online": "Cash.
+
+    Create another div , first get calculateAge function from AppContext, create p tag create curly braces in this call calculateAge(item.userData.dob),now get slotDateFromat from Appcontext,  in another p tag curly braces call slotDateFormat(item.slotDate), {item.slotTime}, get currency var from AppContext and write in p tag {currency}, {item.amount}.
+
+    Now in curly braces if item.cancelled true create p tag Cancelled else check if item.isCompleted true then create p tag Completed else create div in this 2 img tag src cancel_icon and tick_icon
+
+    Now we will add api and function to cancel button and complete button.
+
+    For this come to doctorController.js in this create appointmentComplete async function with req, res params , create try catch block , in try block destructure appointmentId from req.body and docId from req.docId ,use findById on appointmentModel give appointmentId and store in the appointmentData var,create if statement condition appointmentData true && appointementData.docId === docId(from token) then use findByIdAndUpdate on appointementModel give appointementId ,{isComplete:true}, give response success true and message appointement complete else response success false and message mark failed, in the catch block console error and response success false and message data.message
+
+    Copy this function and change name appointementCancel in this instead of isComplete write cancelled:true and also change message and export both function.
+
+    Now create route , so go to doctorRoute.js in this create post request to path "/complete-appointment", give authDoctor and appointmentComplete and create same route but to path "/cancel-appointment" and give appointmentCancel function.
+    
+    Now to implement this go to doctorContext.jsx create completeAppointment async function with appointmentId param, create try catch block , in try block destructure data variable in this make a post request using axios to path backekndUrl concat "/api/doctor/complete-appointment", give appointmentId and headers:{dTokne}, if success then toast.success() and call getAllAppointments() so we get updated appointments else toast error, in the catch block console error and toast error.
+
+    Now create same function but with name cancelAppointment and path "/api/doctor/cancel-appointment" now add both function to value object.
+
+    Now come to doctor appointment page in this destructure both function from doctorContext and call them in the image tag where cancel_icon and tick_icon is .
+
+    Doctor Dashboard page
+
+    First go to doctorController.js and create DoctorDashboard async function with req, res param , in this get docId from req.docId ,fetch all appointments of certain doctor, use find on appointementModel give docId and store in appointments
+    
+    Create and initialize variable earning to 0 , use map function on appointments, in this if item.isCompleted || item.payment true then add item.amount to earning.
+
+    Create and initialize array patients to [], use map function on appointments give item param, in this if patients array does not include item.userId then push item.userId to patients.
+
+    Create dashData object in this give earning, appointments.length, patients.length and latestAppointments: appointements.reverse().slice(0, 5) and give response success true and dashData and export DoctorDashboard function.
+
+    Now create route on doctorRoute.js , in this create a get request to path "/dashboard" give authDoctor and doctorDashboard function.
+
+    Now to implement this go to doctorContext create dashData and setDashData state variable and initialise to false, create a getDashData async function , create try catch block , in try block destructure data variable in this make a get request to backekndUrl concat "/api/doctor/dashboard" give headers:{dToken}
+
+    if data.success setDashData(data.dashData) else toast error and in the catch block console error and toast error and add this function to value object.
+
+    Now come to doctor dashbaord page get getDashData , dashData, dToken from DoctorContext, create useEffect give dependancy dToken, in arrow function if dToken present then call getDashData.
+
+    Now from admin dash board copy 3 divs (the upper 3 divs) of the dashboard and paste in return statement and change first src of img tag to assets.earing_icon and also change p tags curly braces.
+
+    Now copy the lower part of the admin dashboard and paste it to doctorDashboard and instead of  docData in curly braces use userData. 
+
+    Now from DoctorAppointment.jsx file copy the ternary operator from the end and paste it to dashbaord page and get completeAppointment and cancelAppointment function from the DoctorContext
+
+    Now for profile page create getProfileData and updateProfile functions in doctorController and create their routes in doctorRoutes.js.
+
+    Now create the same edit save functionality in the doctorProfile page Lastly do some testing and finishing touches (such as updating the available variables on every page etc) and we are done.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
